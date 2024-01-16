@@ -23,7 +23,7 @@ body { margin: 0; padding: 0; }
     }
 
     .map-overlay .map-overlay-inner {
-        background-color: #fff;
+        background-color: #302F23;;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         border-radius: 3px;
         padding: 10px;
@@ -56,43 +56,125 @@ body { margin: 0; padding: 0; }
 
 <div class="map-overlay top">
     <div class="map-overlay-inner">
-        <h2>Не признали выборы по годам: <span id="year-slider">2010</span></h2>
+        <h2>Выберите год: <span id="year-slider">2010</span></h2>
         <label id="year"></label>
         <input id="slider" type="range" min="2010" max="2020" step="5" value="2010">
     </div>
 </div>
 
-<!-- <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
 <script>
-	// TO MAKE THE MAP APPEAR YOU MUST
-	// ADD YOUR ACCESS TOKEN FROM
-	// https://account.mapbox.com
+    const countriesList2010 = [
+        'USA',
+        'FRA',
+        'AUT',
+        'BEL',
+        'NLD',
+        'BGR',
+        'CYP',
+        'CZE',
+        'DEU',
+        'DNK',
+        'ESP',
+        'EST',
+        'FIN',
+        'GBR',
+        'GRC',
+        'HUN',
+        'IRL',
+        'ITA',
+        'LTU',
+        'LVA',
+        'POL',
+        'PRT',
+        'ROU',
+        'SVK',
+        'SVN',
+        'SWE',
+        'LUX',
+        'ITA'
+    ];
+    const countriesList2015 = [
+        'USA',
+        'FRA',
+        'AUT',
+        'BEL',
+        'NLD',
+        'BGR',
+        'CYP',
+        'CZE',
+        'DEU',
+        'DNK',
+        'ESP',
+        'EST',
+        'FIN',
+        'GBR',
+        'GRC',
+        'HUN',
+        'IRL',
+        'ITA',
+        'LTU',
+        'LVA',
+        'POL',
+        'PRT',
+        'ROU',
+        'SVK',
+        'SVN',
+        'SWE',
+        'LUX',
+        'ITA'
+    ];
+    const countriesList2020 = [
+        'USA',
+        'CAN',
+        'FRA',
+        'AUT',
+        'BEL',
+        'NLD',
+        'BGR',
+        'CYP',
+        'CZE',
+        'DEU',
+        'DNK',
+        'ESP',
+        'EST',
+        'FIN',
+        'GBR',
+        'GRC',
+        'HUN',
+        'IRL',
+        'ITA',
+        'LTU',
+        'LVA',
+        'POL',
+        'PRT',
+        'ROU',
+        'SVK',
+        'SVN',
+        'SWE',
+        'LUX',
+        'NOR',
+        'UKR',
+        'HRV',
+        'BIH',
+        'SRB',
+        'MNE',
+        'ALB',
+        'MKD',
+        'LIE',
+        'JPN',
+        'PRI',
+        'ITA'
+    ]
 	mapboxgl.accessToken = 'pk.eyJ1IjoiZXBob25lc3QiLCJhIjoiY2xyNW95NWV0MW9vMzJqbXkya2UxZWFxbyJ9.hv7Dd4iOh273E8ZG1E_scg';
     const map = new mapboxgl.Map({
         container: 'map',
-        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
         style: 'mapbox://styles/mapbox/dark-v11',
-        projection: 'equirectangular',
+        projection: 'mercator',
         language: 'ru',
         center: [-45, 0],
         minZoom: 2,
         maxZoom: 4
     });
-
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
 
     function filterBy(year) {
         switch(year) {
@@ -100,48 +182,29 @@ body { margin: 0; padding: 0; }
                 map.setFilter('country-boundaries', [
                     "in",
                     "iso_3166_1_alpha_3",
-                    'NLD',
-                    'ITA'
+                    ...countriesList2010
                 ]);
                 break;
             case 2015:
                 map.setFilter('country-boundaries', [
                     "in",
                     "iso_3166_1_alpha_3",
-                    'SWE',
-                    'FRA'
+                    ...countriesList2015
+
                 ]);
                 break;
             case 2020:
                 map.setFilter('country-boundaries', [
                     "in",
                     "iso_3166_1_alpha_3",
-                    'NLD',
-                    'ITA',
-                    'USA'
+                    ...countriesList2020
+
                 ]);
                 break;
             default:
                 throw Error('Incorrect year');
         }
     }
-
-//     map.on('load', () => {
-//         // Data courtesy of http://earthquake.usgs.gov/
-//         // Query for significant earthquakes in 2015 URL request looked like this:
-//         // http://earthquake.usgs.gov/fdsnws/event/1/query
-//         //    ?format=geojson
-//         //    &starttime=2015-01-01
-//         //    &endtime=2015-12-31
-//         //    &minmagnitude=6'
-//         //
-//         // Here we're using d3 to help us make the ajax request but you can use
-//         // Any request method (library or otherwise) you wish.
-//         d3.json(
-//             'https://docs.mapbox.com/mapbox-gl-js/assets/significant-earthquakes-2015.geojson',
-//             jsonCallback
-//         );
-//     });
 
     map.on('load', function() {
         map.addLayer(
@@ -154,18 +217,37 @@ body { margin: 0; padding: 0; }
           'source-layer': 'country_boundaries',
           type: 'fill',
           paint: {
-            'fill-color': '#d2361e',
+            'fill-color': '#FB4B4E',
             'fill-opacity': 0.4,
           },
         },
         'country-label'
       );
 
+      map.addLayer(
+        {
+          id: 'belarus',
+          source: {
+            type: 'vector',
+            url: 'mapbox://mapbox.country-boundaries-v1',
+          },
+          'source-layer': 'country_boundaries',
+          type: 'fill',
+          paint: {
+            'fill-color': '#6df547',
+            'fill-opacity': 0.4,
+          },
+        })
+        map.setFilter('belarus', [
+            "in",
+            "iso_3166_1_alpha_3",
+            "BLR"
+        ]);
+
       map.setFilter('country-boundaries', [
         "in",
         "iso_3166_1_alpha_3",
-        'NLD',
-        'ITA'
+        ...countriesList2010
       ]);
     });
     document.getElementById('slider').value = "2010";
@@ -175,75 +257,6 @@ body { margin: 0; padding: 0; }
         document.getElementById('year-slider').textContent = year;
         filterBy(year);
     });
-
-    function jsonCallback(err, data) {
-        if (err) {
-            throw err;
-        }
-
-        // Create a month property value based on time
-        // used to filter against.
-        data.features = data.features.map((d) => {
-            d.properties.month = new Date(d.properties.time).getMonth();
-            return d;
-        });
-
-        map.addSource('earthquakes', {
-            'type': 'geojson',
-            data: data
-        });
-
-        map.addLayer({
-            'id': 'earthquake-circles',
-            'type': 'circle',
-            'source': 'earthquakes',
-            'paint': {
-                'circle-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'mag'],
-                    6,
-                    '#FCA107',
-                    8,
-                    '#7F3121'
-                ],
-                'circle-opacity': 0.75,
-                'circle-radius': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'mag'],
-                    6,
-                    20,
-                    8,
-                    40
-                ]
-            }
-        });
-
-        map.addLayer({
-            'id': 'earthquake-labels',
-            'type': 'symbol',
-            'source': 'earthquakes',
-            'layout': {
-                'text-field': ['concat', ['to-string', ['get', 'mag']], 'm'],
-                'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-                'text-size': 12
-            },
-            'paint': {
-                'text-color': 'rgba(0,0,0,0.5)'
-            }
-        });
-
-        // Set filter to first month of the year
-        // 0 = January
-        filterBy(0);
-
-        document.getElementById('slider').addEventListener('input', (e) => {
-            const year = parseInt(e.target.value, 10);
-            console.log(year);
-            filterBy(year);
-        });
-    }
 </script>
 
 </body>
