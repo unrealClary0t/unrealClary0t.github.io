@@ -17,6 +17,18 @@ body { margin: 0; padding: 0; }
     top: 0;
     left: 0;
     padding: 10px;
+    box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+/* Media query for screens smaller than 650px */
+@media (max-width: 650px) {
+    .map-overlay {
+        font: 10px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        width: 100%; /* Make the width 100% for smaller screens */
+        bottom: 0; /* Place the slider at the bottom of the screen */
+        top: auto; /* Remove the top positioning */
+        padding: 10px;
+    }
 }
 
 .map-overlay .map-overlay-inner {
