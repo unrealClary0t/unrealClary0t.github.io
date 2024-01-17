@@ -7,8 +7,24 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
 <style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #FB4B4E;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
 
 .map-overlay {
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -24,15 +40,21 @@ body { margin: 0; padding: 0; }
 @media (max-width: 650px) {
     .map-overlay {
         font: 10px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-        width: 100%; /* Make the width 100% for smaller screens */
-        bottom: 0; /* Place the slider at the bottom of the screen */
-        top: auto; /* Remove the top positioning */
-        padding: 10px;
+        width: 100%;
+        top: 85%;
+        left: 0;
+        padding: 15px 0;
+    }
+
+    #map {
+        width: 100%;
+        top: 0;
+        bottom: 15%;
     }
 }
 
 .map-overlay .map-overlay-inner {
-    background-color: #6df547;;
+    background-color: #6df547;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     border-radius: 3px;
     padding: 10px;
@@ -218,7 +240,22 @@ input[type="range"]:active::-moz-range-progress {
 </style>
 </head>
 <body>
-<div id="map"></div>
+<div style="background-color: #f0f0f0 !important;">
+    <div id="map"></div>
+
+    <div class="map-overlay top">
+        <div class="map-overlay-inner">
+            <div class="years">
+                <h2 onclick="setYear(2010)">2010</h2>
+                <h2 onclick="setYear(2015)">2015</h2>
+                <h2 onclick="setYear(2020)">2020</h2>
+            </div>
+            <label id="year"></label>
+            <input id="slider" type="range" min="2010" max="2020" step="5" value="2010">
+        </div>
+    </div>
+</div>
+<!-- <div id="map"></div>
 
 <div class="map-overlay top">
     <div class="map-overlay-inner">
@@ -230,7 +267,7 @@ input[type="range"]:active::-moz-range-progress {
         <label id="year"></label>
         <input id="slider" type="range" min="2010" max="2020" step="5" value="2010">
     </div>
-</div>
+</div> -->
 
 <script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoiZXBob25lc3QiLCJhIjoiY2xyNW95NWV0MW9vMzJqbXkya2UxZWFxbyJ9.hv7Dd4iOh273E8ZG1E_scg';
@@ -309,6 +346,7 @@ input[type="range"]:active::-moz-range-progress {
         'SVK',
         'SVN',
         'SWE',
+        'HRV',
         'LUX',
     ];
     const countriesList2020 = [
@@ -352,22 +390,34 @@ input[type="range"]:active::-moz-range-progress {
         'MKD',
         'LIE',
         'JPN',
-        'ISL',
-        'XKX',
-    ]
+        'ISL'    ]
 
     function updateMap(year) {
-        const layers = {
-            'countries-2010': year === 2010,
-            'countries-2015': year === 2015,
-            'countries-2020': year === 2020,
+        const countries = {
+            2010: countriesList2010,
+            2015: countriesList2015,
+            2020: countriesList2020,
         }
-        Object.entries(layers).filter(([layerName, visibility]) => {
-            map.setLayoutProperty(layerName, 'visibility', visibility ? 'visible' : 'none');
-        });
+
+        map.setPaintProperty(
+            'selected-countries',
+            'fill-color',
+            getCountriesColor(countries[year])
+        );
     }
 
-    function createCountriesLayer(layerName, countries, visibility) {
+    function getCountriesColor(countries) {
+        const matchExpression = ['match', ['get', 'iso_3166_1_alpha_3']];
+
+        countries.map(country => matchExpression.push(country, '#FB4B4E'))
+
+        matchExpression.push('BLR', '#6df547');
+        matchExpression.push('rgba(0, 0, 0, 0)');
+
+        return matchExpression;
+    }
+
+    function createCountriesLayer(layerName, countries) {
         const matchExpression = ['match', ['get', 'iso_3166_1_alpha_3']];
 
         countries.map(country => matchExpression.push(country, '#FB4B4E'))
@@ -393,7 +443,6 @@ input[type="range"]:active::-moz-range-progress {
                 'type': 'fill',
                 'source': 'countries',
                 'source-layer': 'country_boundaries',
-                // 'visibility': visibility ? 'visible' : 'none',
                 'paint': {
                     'fill-color': matchExpression,
                     'fill-opacity': 0.5
@@ -415,10 +464,7 @@ input[type="range"]:active::-moz-range-progress {
             url: 'mapbox://mapbox.country-boundaries-v1'
         });
 
-        createCountriesLayer('countries-2010', countriesList2010, true);
-        createCountriesLayer('countries-2015', countriesList2015, false);
-        createCountriesLayer('countries-2020', countriesList2020, false);
-
+        createCountriesLayer('selected-countries', countriesList2010);
         setYear(2010);
     });
 
