@@ -50,12 +50,12 @@ body {
     margin: 0 0 10px;
 }
 
-.map-overlay h2:hover {
-    color: #6b6969;
-}
-
 .year {
     color: #828282;
+}
+
+.year:hover {
+    color: #6b6969;
 }
 
 .active {
@@ -95,6 +95,10 @@ body {
         width: 100%;
         top: 0;
         bottom: 40%;
+    }
+
+    .year:hover {
+        color: black;
     }
 }
 
@@ -264,7 +268,7 @@ input[type="range"]:active::-moz-range-progress {
         style: 'mapbox://styles/mapbox/dark-v11',
         projection: 'mercator',
         language: 'ru',
-        center: isSmallScreen ? [-10, 50] : [12, 50],
+        center: isSmallScreen ? [-40, 50] : [12, 50],
         zoom: isSmallScreen ? 0.5 : 2.4,
         minZoom: isSmallScreen ? 0 : 2,
         maxZoom: 4,
