@@ -27,7 +27,7 @@ body {
 }
 
 .map-overlay {
-    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font: 12px/20px custom_99543, 'Helvetica Neue', Helvetica, sans-serif;
     position: absolute;
     width: 25%;
     top: 0;
@@ -55,11 +55,11 @@ body {
 }
 
 .year:hover {
-    color: #6b6969;
+    color: #494747;
 }
 
 .active {
-    color: black;
+    color: #302F23;
 }
 
 .map-overlay input {
@@ -80,7 +80,7 @@ body {
 /* Media query for screens smaller than 650px */
 @media (max-width: 650px) {
     .map-overlay {
-        font: 10px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font: 10px/20px custom_99543, 'Helvetica Neue', Helvetica, sans-serif;
         width: 100%;
         top: 60%;
         left: 0;
@@ -250,12 +250,13 @@ input[type="range"]:active::-moz-range-progress {
 <div class="map-overlay top">
     <div class="map-overlay-inner">
         <div class="years">
-            <h2 id='year-2010' class="year active" onclick="setYear(2010)">2010</h2>
-            <h2 id='year-2015' class="year" onclick="setYear(2015)">2015</h2>
-            <h2 id='year-2020' class="year" onclick="setYear(2020)">2020</h2>
+            <h2 id='year-0' class="year active" onclick="setYearByIndex(0)">2006</h2>
+            <h2 id='year-1' class="year" onclick="setYearByIndex(1)">2010</h2>
+            <h2 id='year-2' class="year" onclick="setYearByIndex(2)">2015</h2>
+            <h2 id='year-3' class="year" onclick="setYearByIndex(3)">2020</h2>
         </div>
         <label id="year"></label>
-        <input id="slider" type="range" min="2010" max="2020" step="5" value="2010">
+        <input id="slider" type="range" min="0" max="3" step="1" value="0">
     </div>
 </div>
 
@@ -269,7 +270,7 @@ input[type="range"]:active::-moz-range-progress {
         projection: 'mercator',
         language: 'ru',
         center: isSmallScreen ? [-35, 50] : [12, 50],
-        zoom: isSmallScreen ? 0.4 : 2.4,
+        zoom: isSmallScreen ? 0.4 : 2,
         minZoom: isSmallScreen ? 0 : 2,
         maxZoom: 4,
         scrollZoom: isSmallScreen,
@@ -279,6 +280,12 @@ input[type="range"]:active::-moz-range-progress {
     if (!isSmallScreen) {
         map.addControl(new mapboxgl.NavigationControl());
     }
+
+    const countriesList2006 = [
+        'USA',
+        'PRI',
+        'LTU'
+    ]
 
     const countriesList2010 = [
         'USA',
@@ -386,17 +393,18 @@ input[type="range"]:active::-moz-range-progress {
         'JPN',
         'ISL'    ]
 
-    function updateMap(year) {
-        const countries = {
-            2010: countriesList2010,
-            2015: countriesList2015,
-            2020: countriesList2020,
-        }
+    function updateMap(index) {
+        const countriesColor = [
+            countriesList2006,
+            countriesList2010,
+            countriesList2015,
+            countriesList2020,
+        ]
 
         map.setPaintProperty(
             'selected-countries',
             'fill-color',
-            getCountriesColor(countries[year])
+            getCountriesColor(countriesColor[index])
         );
     }
 
@@ -440,10 +448,10 @@ input[type="range"]:active::-moz-range-progress {
         );
     }
 
-    function setYear(year) {
-        document.getElementById('slider').value = year;
-        highlightYear(year);
-        updateMap(year);
+    function setYearByIndex(index) {
+        document.getElementById('slider').value = index;
+        highlightYear(index);
+        updateMap(index);
     }
 
     function highlightYear(year) {
@@ -459,14 +467,15 @@ input[type="range"]:active::-moz-range-progress {
             url: 'mapbox://mapbox.country-boundaries-v1'
         });
 
-        createCountriesLayer('selected-countries', countriesList2010);
-        setYear(2010);
+        createCountriesLayer('selected-countries', countriesList2006);
+        setYearByIndex(0);
     });
 
     document.getElementById('slider').addEventListener('input', (e) => {
-        const year = parseInt(e.target.value, 10);
-        highlightYear(year);
-        updateMap(year);
+        const index = parseInt(e.target.value, 10);
+        console.log(index)
+        highlightYear(index);
+        updateMap(index);
     });
 </script>
 
